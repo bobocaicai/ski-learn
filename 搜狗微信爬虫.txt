@@ -1,0 +1,99 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Dec 07 10:04:22 2016
+
+@author: student
+"""
+import urllib
+from bs4 import BeautifulSoup
+import re
+import time
+
+def getHtml(url):
+    page=urllib.urlopen(url)
+    html=page.read()
+    contents(html)
+
+def contents(html):
+    soup=BeautifulSoup(html)
+    ##取链接
+    links=[]
+    ##取文章名字
+    titles=[]
+    ##取阅读数
+    numbers=[]
+    ##取发表时间
+    time_t=[]
+    
+    link_list=soup.find_all(class_='txt-box')
+    #link1=link_list[0]
+    lens=len(link_list)
+    for i in range(lens):
+        links.append(link_list[0].a['href'])
+        c1=link_list[i].find_all("a")
+        cc=c1[0].get_text()
+        titles.append(cc)
+        c2=link_list[i].find_all(class_='s1')[0].get_text()
+        numbers.append(c2)
+        
+        c3=link_list[i].find_all(class_='s2')[0].get_text()
+        ps=re.compile(r'\d+')
+        c4=ps.findall(c3)
+        c5=c4[0].encode('utf-8')
+        x=time.localtime(float(c5))
+        y=time.strftime('%Y-%m-%d %H:%M:%S',x)
+        time_t.append(y)
+    
+    with open(r'd:\1\links.txt','a+') as f1:
+        for i in links:
+            f1.write(i)
+            f1.write('\n')
+    with open(r'd:\1\titles.txt','a+') as f2:
+        for i in titles:
+            f2.write(i)
+            f2.write('\n')
+    with open(r'd:\1\numbers.txt','a+') as f3:
+        for i in numbers:
+            f3.write(i)
+            f3.write('\n')
+    with open(r'd:\1\time_t.txt','a+') as f4:
+        for i in time_t:
+            f4.write(i)
+            f4.write('\n')
+    
+    
+    
+    #c3=link1.find_all(class_='s2')[0].get_text()
+    #ps=re.compile(r'\d+')
+    #c4=ps.findall(c3)
+    #c5=c4[0].encode("utf-8")
+    #print(type(c5))
+    #x=time.localtime(float(c5))
+    #y=time.strftime('%Y-%m-%d %H:%M:%S',x)
+    #print(y)
+    
+    
+    ##取文章名字
+    #titles=[]
+    #c1=link1.find_all("a")
+        
+    #titles.append(link1.h3)
+    #print(c1[0]).encode('gb18030')
+    #print(c1[0].get_text())
+    
+    #pattern=re.compile(r'href=.*\"')
+    #match=pattern.match(link1)
+    #print(match.group())
+
+    #print(links).encode('gb18030')    
+    #for l in links_1:
+    #    print(l).encode('gb18030')
+    
+wangye="http://weixin.sogou.com/weixin?type=2&query=%E7%BD%97%E4%B8%80%E7%AC%91&ie=utf8&_sug_=y&_sug_type_=&w=01019900&sut=2766&sst0=1481026305945&lkt=1%2C1481026305792%2C1481026305792"
+a1="http://weixin.sogou.com/weixin?query=%E7%BD%97%E4%B8%80%E7%AC%91&_sug_type_=&sut=2766&lkt=1%2C1481026305792%2C1481026305792&_sug_=y&type=2&sst0=1481026305945&page="
+b1="&ie=utf8&w=01019900&dr=1"
+#getHtml(wangye)
+#for j in range(2,11):
+for jj in range(2,11):
+    net_wang=a1+str(jj)+b1
+    getHtml(net_wang)
